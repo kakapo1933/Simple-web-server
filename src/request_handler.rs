@@ -52,3 +52,20 @@ fn handle_route <'a>(request_method: &'a str, request_path: &'a str) -> (&'a str
     };
     (status_line, file_name)
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::request_handler::handle_route;
+
+    #[test]
+    fn route_is_handled() {
+        let (mut status_line, mut file_name) = handle_route("GET", "/");
+        assert_eq!((status_line, file_name), ("HTTP/1.1 200 OK", "webPages/hello.html"));
+        
+        (status_line, file_name) = handle_route("POST", "/sleep");
+        assert_eq!((status_line, file_name), ("HTTP/1.1 404 NOT FOUND", "webPages/404.html"));
+
+        (status_line, file_name) = handle_route("ekokgo", "/oriu");
+        assert_eq!((status_line, file_name), ("HTTP/1.1 404 NOT FOUND", "webPages/404.html"));
+    }
+}
